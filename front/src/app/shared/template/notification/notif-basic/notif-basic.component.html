@@ -1,0 +1,19 @@
+<!-- {{ appService.addTemplate('myTemplateNotif', myTemplateNotif) }} -->
+
+<ng-template #myTemplateNotif let-data="dataContext" let-dataBis="data2" let-dataBis3="data3">
+    <div class="ant-notification-notice-content">
+        <div class="ant-notification-notice-with-icon">
+            <span class="ant-notification-notice-icon">
+                <span
+                    nz-icon
+                    nzType="smile"
+                    style="color: rgb(16, 142, 233);"
+                ></span>
+            </span>
+            <div class="ant-notification-notice-message">{{dataBis}}</div>
+            <div class="ant-notification-notice-description">
+                {{data}} | {{dataBis3}}
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col">
+        <app-anonymous-register [inputAllPangolinsNotFriend]="allPangolinsNotFriend" (outputAllPangolinsNotFriend)="allPangolinsNotFriend=$event" (outputPangolin)="pangolin=$event"></app-anonymous-register>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <h3 class="text-center">Liste des Pangolins</h3>
+        <nz-list nzItemLayout="vertical">
+            <nz-list-item *ngFor="let item of allPangolinsNotFriend">
+                <nz-list-item-meta>
+                    <nz-list-item-meta-avatar></nz-list-item-meta-avatar>
+                    <nz-list-item-meta-title>
+                        {{item.username }}
+                    </nz-list-item-meta-title>
+                    <nz-list-item-meta-description>
+                        {{ item.roles[0].name }}
+                    </nz-list-item-meta-description>
+                </nz-list-item-meta>
+                <ul nz-list-item-actions>
+                    <nz-list-item-action *ngIf="!isSending">
+                        <a (click)="onClickAdd(item._id)">
+                            <span
+                                nz-icon
+                                nzType="heart"
+                                nzTheme="fill"
+                            ></span>
+                        </a>
+                    </nz-list-item-action>
+                </ul>
+                <nz-list-item-extra>
+                    <img
+                        width="272"
+                        alt="logo"
+                        src="/assets/images/pangolin-4.jpeg"
+                    />
+                </nz-list-item-extra>
+            </nz-list-item>
+        </nz-list>
+    </div>
+    <div class="col">
+        <h3 class="text-center">Liste des amis</h3>
+        <nz-list nzItemLayout="vertical">
+            <nz-list-item *ngFor="let item of pangolin.pangolinFriends">
+                <nz-list-item-meta>
+                    <nz-list-item-meta-avatar></nz-list-item-meta-avatar>
+                    <nz-list-item-meta-title>
+                        {{item.username }}
+                    </nz-list-item-meta-title>
+                    <nz-list-item-meta-description>
+                        {{ item.roles[0].name }}
+                    </nz-list-item-meta-description>
+                </nz-list-item-meta>
+                <ul nz-list-item-actions>
+                    <nz-list-item-action *ngIf="!isSending">
+                        <a (click)="onClickDelete(item._id)">
+                            <span
+                                nz-icon
+                                nzType="delete"
+                                nzTheme="fill"
+                            ></span>
+                        </a>
+                    </nz-list-item-action>
+                </ul>
+                <nz-list-item-extra>
+                    <img
+                        width="272"
+                        alt="logo"
+                        src="/assets/images/pangolin-4.jpeg"
+                    />
+                </nz-list-item-extra>
+            </nz-list-item>
+        </nz-list>
+    </div>
+</div>

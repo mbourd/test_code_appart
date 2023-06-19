@@ -1,0 +1,72 @@
+version: '3.7'
+services:
+  mongo-db:
+    image: mongo
+    # container_name: 'test_code_appartoo_mongo'
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_DATABASE=test_appartoo
+      - MONGO_INITDB_ROOT_USERNAME=mongoUser
+      - MONGO_INITDB_ROOT_PASSWORD=ChangeMe
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db
+  mongo-express:
+    image: mongo-express
+    links:
+      - mongo-db
+    restart: always
+    ports:
+      - 8081:8081
+    # networks:
+    #   - mongo-compose-network
+    # depends_on:
+    #   - mongo-db
+    environment:
+      - ME_CONFIG_OPTIONS_EDITORTHEME=ambiance
+      - ME_CONFIG_MONGODB_SERVER=mongo-db
+      - ME_CONFIG_MONGODB_PORT=${DB_PORT}
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASSWORD}
+      - ME_CONFIG_BASICAUTH_USERNAME=${DB_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${DB_PASSWORD}
+
+  server:
+    container_name: Test_Code_appartoo_server
+    tty: true
+    build:
+      context: ./
+      dockerfile: .docker/Dockerfile.Server.Prod
+    image: testproject/appartoo_mean/back
+    ports:
+      - '3000:3000'
+    command: run start
+    links:
+      - mongo-db
+    volumes:
+      - ./:/app
+    environment:
+      - DB_CONNECTION=mongodb://${DB_USER}:${DB_PASSWORD}@mongo-db:${DB_PORT}/${DB_DATABASE}
+      - SERVER_PORT=3000
+
+  frontend:
+    container_name: Test_Code_appartoo_front
+    tty: true
+    build:
+      context: ./
+      dockerfile: .docker/Dockerfile.Angular.Prod
+    image: testproject/appartoo_mean/front
+    ports:
+      - '80:80'
+    volumes:
+      - ./front:/home/node/app
+    stdin_open: true
+    environment:
+      - 'EXTEND_ESLINT=true'
+
+# volumes:
+#   data:
+#     name: data_test_mongo

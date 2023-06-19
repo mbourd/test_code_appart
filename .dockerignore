@@ -1,0 +1,8 @@
+.git
+client
+node_modules
+.gitignore
+*.md
+mongo-volume
+.vscode
+.docker

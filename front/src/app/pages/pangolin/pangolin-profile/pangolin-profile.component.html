@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col">
+        <nz-card
+            style="width:300px;"
+            [nzCover]="coverTemplate"
+            [nzActions]="[actionEdit]"
+        >
+            <nz-card-meta
+                [nzTitle]="pangolin.username"
+                [nzDescription]="pangolin.roles[0].name"
+                [nzAvatar]="avatarTemplate"
+            ></nz-card-meta>
+        </nz-card>
+        <ng-template #avatarTemplate>
+            <nz-avatar nzSrc="/assets/images/pangolin-1.jpeg"></nz-avatar>
+        </ng-template>
+        <ng-template #coverTemplate>
+            <img
+                alt="example"
+                src="/assets/images/pangolin-2.jpeg"
+            />
+        </ng-template>
+        <ng-template #actionEdit>
+            <span
+                nz-icon
+                nzType="edit"
+                (click)="onClickEdit()"
+            ></span>
+        </ng-template>
+    </div>
+    <div class="col">
+        <ng-container *ngIf="isEditing">
+            <form
+                nz-form
+                [formGroup]="form"
+                (ngSubmit)="onSubmit()"
+            >
+                <nz-form-item>
+                    <nz-form-control>
+                        <nz-input-group>
+                            <nz-select
+                                formControlName="role"
+                                id="control_role"
+                            >
+                                <nz-option
+                                    *ngFor="let r of availableRoles"
+                                    [nzValue]="r._id"
+                                    [nzLabel]="r.name"
+                                ></nz-option>
+                            </nz-select>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+                <button
+                    nz-button
+                    [disabled]="isSending"
+                    [nzType]="'primary'"
+                >Mettre à jour</button>
+            </form>
+        </ng-container>
+    </div>
+</div>

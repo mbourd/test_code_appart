@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col">
+        <h2 class="text-center">Inscription Pangolin</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col col-form">
+        <form
+            nz-form
+            [formGroup]="form"
+            (ngSubmit)="onSubmit()"
+        >
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your username!">
+                    <nz-input-group nzPrefixIcon="user">
+                        <input
+                            type="text"
+                            nz-input
+                            formControlName="username"
+                            placeholder="Username"
+                        />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-input-group nzPrefixIcon="lock">
+                        <input
+                            type="password"
+                            nz-input
+                            formControlName="password"
+                            placeholder="Password"
+                            minlength="4"
+                        />
+                    </nz-input-group>
+                    <shared-component-form-validator [form]="form" [errors]="form.get('password')?.errors"></shared-component-form-validator>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-input-group nzPrefixIcon="lock">
+                        <input
+                            type="password"
+                            nz-input
+                            formControlName="password2"
+                            placeholder="Password"
+                            minlength="4"
+                        />
+                    </nz-input-group>
+                    <shared-component-form-validator [form]="form" [errors]="form.get('password2')?.errors"></shared-component-form-validator>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-input-group>
+                        <nz-select
+                            formControlName="role"
+                            id="control_role"
+                            nzPlaceHolder="Role"
+                        >
+                          <nz-option *ngFor="let r of availableRoles" [nzValue]="r._id" [nzLabel]="r.name"></nz-option>
+                        </nz-select>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <button
+                nz-button
+                class="form-button form-margin"
+                [disabled]="isSending"
+                [nzType]="'primary'"
+            >Inscription</button>
+        </form>
+    </div>
+</div>

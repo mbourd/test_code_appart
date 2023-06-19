@@ -1,0 +1,11 @@
+<ng-container *ngIf="form.dirty && errors && errors['required']">
+    <div class="text-danger">Ce champ est obligatoire</div>
+</ng-container>
+
+<ng-container *ngIf="form.dirty && errors && errors['confirmPassword']">
+    <div class="text-danger">Les mots de passe ne correspondent pas</div>
+</ng-container>
+
+<ng-container *ngIf="form.dirty && errors && errors['minLengthPassword']">
+    <div class="text-danger">Le mot de passe doit faire au minimum 4 charactères</div>
+</ng-container>
