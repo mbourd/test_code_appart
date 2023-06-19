@@ -22,7 +22,6 @@ import { NzListModule } from 'ng-zorro-antd/list';
 
 import { NotifBasicComponent } from './template/notification/notif-basic/notif-basic.component';
 import { FormValidatorComponent } from './form/form-validator/form-validator.component';
-import { AnonymousRegisterComponent } from '../pages/anonymous/anonymous-register/anonymous-register.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
