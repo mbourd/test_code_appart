@@ -18,8 +18,8 @@
                     </nz-list-item-meta-description>
                 </nz-list-item-meta>
                 <ul nz-list-item-actions>
-                    <nz-list-item-action *ngIf="!isSending">
-                        <a (click)="onClickAdd(item._id)">
+                    <nz-list-item-action>
+                        <a (click)="onClickAdd(item._id)" *ngIf="!isSending">
                             <span
                                 nz-icon
                                 nzType="heart"
@@ -52,8 +52,8 @@
                     </nz-list-item-meta-description>
                 </nz-list-item-meta>
                 <ul nz-list-item-actions>
-                    <nz-list-item-action *ngIf="!isSending">
-                        <a (click)="onClickDelete(item._id)">
+                    <nz-list-item-action>
+                        <a (click)="onClickDelete(item._id)" *ngIf="!isSending">
                             <span
                                 nz-icon
                                 nzType="delete"

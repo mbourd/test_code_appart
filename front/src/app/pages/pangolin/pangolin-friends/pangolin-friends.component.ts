@@ -77,6 +77,7 @@ export class PangolinFriendsComponent implements OnInit {
   }
 
   onClickDelete(id: string): void {
+    this.isSending = true;
     this.pangolinService.removeFriend(this.pangolin._id, id).subscribe({
       next: async (d) => {
         // console.log(d);
