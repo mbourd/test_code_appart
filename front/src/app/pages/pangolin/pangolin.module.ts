@@ -6,6 +6,7 @@ import { PangolinEditComponent } from './pangolin-edit/pangolin-edit.component';
 import { PangolinShowComponent } from './pangolin-show/pangolin-show.component';
 import { PangolinProfileComponent } from './pangolin-profile/pangolin-profile.component';
 import { PangolinFriendsComponent } from './pangolin-friends/pangolin-friends.component';
+import { AnonymousRegisterComponent } from '../anonymous/anonymous-register/anonymous-register.component';
 
 
 
@@ -15,6 +16,7 @@ import { PangolinFriendsComponent } from './pangolin-friends/pangolin-friends.co
     PangolinEditComponent,
     PangolinProfileComponent,
     PangolinFriendsComponent,
+    AnonymousRegisterComponent,
   ],
   imports: [
     SharedModule,

@@ -50,7 +50,7 @@ const modules: any[] = [
   NzListModule,
 ];
 
-const components: any[] = [NotifBasicComponent, FormValidatorComponent, AnonymousRegisterComponent];
+const components: any[] = [NotifBasicComponent, FormValidatorComponent];
 
 @NgModule({
   declarations: [...components],
