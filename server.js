@@ -19,8 +19,8 @@ const app = express();
 
 //added middleware code
 app.use(cors({
-  origin: "http://192.168.1.32:4200",
-  // origin: "http://localhost:4200",
+  // origin: "http://192.168.1.32:4200",
+  origin: "http://localhost:4200",
   credentials:true,
 }));
 app.use(compression());
