@@ -22,6 +22,9 @@ import { NzListModule } from 'ng-zorro-antd/list';
 
 import { NotifBasicComponent } from './template/notification/notif-basic/notif-basic.component';
 import { FormValidatorComponent } from './form/form-validator/form-validator.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -29,12 +32,26 @@ const antDesignIcons = AllIcons as {
 const icons: IconDefinition[] = Object.keys(antDesignIcons).map(
   (key) => antDesignIcons[key]
 );
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 const modules: any[] = [
   CommonModule,
   ReactiveFormsModule,
   FormsModule,
   NgbModule,
+  HttpClientModule,
+
+  TranslateModule.forRoot({
+    defaultLanguage: 'fr',
+    loader: {
+      provide: TranslateLoader,
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient]
+    }
+  }),
 
   NzLayoutModule,
   NzNotificationModule,

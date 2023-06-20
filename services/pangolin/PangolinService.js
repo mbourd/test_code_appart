@@ -118,12 +118,16 @@ export class PangolinService {
         }
       }
 
-      if (method === "exec" || param === null || param === undefined) {
-        result = result[method]();
-      } else {
-        result = isSpread
-          ? result[method](...param)
-          : result[method](param);
+      try {
+        if (method === "exec" || param === null || param === undefined) {
+          result = result[method]();
+        } else {
+          result = isSpread
+            ? result[method](...param)
+            : result[method](param);
+        }
+      } catch (e) {
+        throw new ServiceUnavailableException(e.message);
       }
     }
 

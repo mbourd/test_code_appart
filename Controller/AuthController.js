@@ -62,7 +62,15 @@ router.post('/signup', handleErrorRoute(async (req, resp) => {
     await currentPangolin.save();
     await newPangolin.save();
 
-    return resp.status(200).send(currentPangolin);
+    return resp.status(200).send(
+      await service.pangolin.custom(
+        { method: 'findById', param: req.userId },
+        { method: 'populate', param: ['roles'] },
+        { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
+        { method: 'select', param: ['-password'] },
+        { method: 'exec' }
+      )
+    );
   }
 
   resp.status(200).send('"Signed up"');
