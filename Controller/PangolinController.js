@@ -39,8 +39,6 @@ router.get("/:id",
       throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
     }
 
-    // resp.status(200).send(pangolin);
-
     resp.status(200).send(pangolin);
   })
 );
