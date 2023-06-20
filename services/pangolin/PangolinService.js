@@ -99,6 +99,35 @@ export class PangolinService {
 
     return messages;
   }
+  async findThenNormalized(method, methodParam) {
+    if (method === undefined) {
+      throw new ServiceUnavailableException(`La méthode ne peut pas être undefined`);
+    }
+    if (typeof method !== "string") {
+      throw new ServiceUnavailableException(`La méthode doit être de type string`);
+    }
+    if (!['find', 'findOne', 'findById'].includes(method)) {
+      throw new ServiceUnavailableException(`La méthode peut seulement être findById | findOne | find`);
+    }
+    if (method === "findById" && !ObjectId.isValid(methodParam)) {
+      throw new ServiceUnavailableException('Pangolin id invalide');
+    }
+
+    return this.custom(
+      { method: method, param: methodParam },
+      { method: 'populate', param: ['roles'] },
+      {
+        method: 'populate', param: {
+          path: 'pangolinFriends',
+          populate: [{ path: 'roles', model: 'Role' }],
+          select: '-password'
+        }
+      },
+      // { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
+      { method: 'select', param: ['-password'] },
+      { method: 'exec' }
+    );
+  }
   async custom(...args) {
     let result = Pangolin;
 

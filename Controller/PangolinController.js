@@ -21,13 +21,7 @@ router.get("/",
     //   return { username: p.username, roles: p.roles, pangolinFriends: p.pangolinFriends, _id: p._id };
     // });
     // const result = await Pangolin.find().populate(['roles']).populate('pangolinFriends', '-password').select(['-password']).exec();
-    const result = await service.pangolin.custom(
-      { method: 'find' },
-      { method: 'populate', param: ['roles'] },
-      { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
-      { method: 'select', param: ['-password'] },
-      { method: 'exec' }
-    )
+    const result = await service.pangolin.findThenNormalized('find');
 
     resp.status(200).send(result);
   })
@@ -38,13 +32,16 @@ router.get("/:id",
   [handleErrorRoute(checkJWT)],
   handleErrorRoute(async (req, resp, next) => {
     const { id } = req.params;
-    const pangolin = await service.pangolin.findById(id);
+    // const pangolin = await service.pangolin.findById(id);
 
-    if (pangolin === null) {
-      throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
-    }
+    // if (pangolin === null) {
+    //   throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
+    // }
 
-    resp.status(200).send(pangolin);
+    // resp.status(200).send(pangolin);
+
+    const _pangolin = await service.pangolin.findThenNormalized('findById', id);
+    resp.status(200).send(_pangolin);
   })
 );
 
@@ -106,16 +103,19 @@ router.put("/update/:id",
 
     await service.pangolin.update(pangolin, data);
 
-    const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
+    // const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
 
-    const result = {
-      _id: _pangolin._id,
-      username: _pangolin.username,
-      roles: _pangolin.roles,
-      pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
-    }
+    // const result = {
+    //   _id: _pangolin._id,
+    //   username: _pangolin.username,
+    //   roles: _pangolin.roles,
+    //   pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    // }
 
-    resp.status(200).send(result);
+    // resp.status(200).send(result);
+
+    const _pangolin = await service.pangolin.findThenNormalized('findById', id);
+    resp.status(200).send(_pangolin);
   })
 );
 
@@ -151,26 +151,29 @@ router.put("/add-friend/:id",
     await pangolin.save();
     await friendPangolin.save();
 
-    const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
+    // const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
 
-    const result = {
-      _id: _pangolin._id,
-      username: _pangolin.username,
-      roles: _pangolin.roles,
-      pangolinFriends: await Promise.all(
-        _pangolin.pangolinFriends.map(async (p) =>
-          await service.pangolin.custom(
-            { method: 'findById', param: p._id },
-            { method: 'select', param: ['-password'] },
-            { method: 'populate', param: ['roles'] },
-            { method: 'exec' },
-          )
-        )
-      ),
-      // pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
-    }
+    // const result = {
+    //   _id: _pangolin._id,
+    //   username: _pangolin.username,
+    //   roles: _pangolin.roles,
+    //   pangolinFriends: await Promise.all(
+    //     _pangolin.pangolinFriends.map(async (p) =>
+    //       await service.pangolin.custom(
+    //         { method: 'findById', param: p._id },
+    //         { method: 'select', param: ['-password'] },
+    //         { method: 'populate', param: ['roles'] },
+    //         { method: 'exec' },
+    //       )
+    //     )
+    //   ),
+    //   // pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    // }
 
-    resp.status(200).send(result);
+    // resp.status(200).send(result);
+
+    const _pangolin = await service.pangolin.findThenNormalized('findById', id);
+    resp.status(200).send(_pangolin);
   })
 );
 
@@ -213,16 +216,19 @@ router.put("/remove-friend/:id",
     await pangolin.save();
     await friendPangolin.save();
 
-    const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
+    // const _pangolin = await service.pangolin.findByIdPopulate(id, ['roles', 'pangolinFriends']);
 
-    const result = {
-      _id: _pangolin._id,
-      username: _pangolin.username,
-      roles: _pangolin.roles,
-      pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
-    }
+    // const result = {
+    //   _id: _pangolin._id,
+    //   username: _pangolin.username,
+    //   roles: _pangolin.roles,
+    //   pangolinFriends: await Promise.all(_pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    // }
 
-    resp.status(200).send(result);
+    // resp.status(200).send(result);
+
+    const _pangolin = await service.pangolin.findThenNormalized('findById', id);
+    resp.status(200).send(_pangolin);
   })
 );
 

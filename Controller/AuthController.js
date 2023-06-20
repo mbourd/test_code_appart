@@ -63,13 +63,14 @@ router.post('/signup', handleErrorRoute(async (req, resp) => {
     await newPangolin.save();
 
     return resp.status(200).send(
-      await service.pangolin.custom(
-        { method: 'findById', param: req.userId },
-        { method: 'populate', param: ['roles'] },
-        { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
-        { method: 'select', param: ['-password'] },
-        { method: 'exec' }
-      )
+      await service.pangolin.findThenNormalized('findById', req.userId)
+      // await service.pangolin.custom(
+      //   { method: 'findById', param: req.userId },
+      //   { method: 'populate', param: ['roles'] },
+      //   { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
+      //   { method: 'select', param: ['-password'] },
+      //   { method: 'exec' }
+      // )
     );
   }
 
@@ -100,7 +101,8 @@ router.post('/signin', [], handleErrorRoute(async (req, resp) => {
     _id: pangolin._id,
     username: pangolin.username,
     roles: pangolin.roles,
-    pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await service.pangolin.findThenNormalized('findById', p._id))),
+    // pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
   });
 }));
 
