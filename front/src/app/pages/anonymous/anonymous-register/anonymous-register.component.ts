@@ -22,7 +22,7 @@ import { FormValidators } from 'src/app/shared/form/form.validators';
   styleUrls: ['./anonymous-register.component.scss'],
 })
 export class AnonymousRegisterComponent implements OnInit {
-  @Input() inputAllPangolinsNotFriend!: Pangolin[] | null | undefined;
+  @Input() inputAllPangolinsNotFriend: Pangolin[] | null | undefined;
   @Output() outputAllPangolinsNotFriend: EventEmitter<Pangolin[]> = new EventEmitter<Pangolin[]>();
   @Output() outputPangolin: EventEmitter<Pangolin> = new EventEmitter<Pangolin>();
 

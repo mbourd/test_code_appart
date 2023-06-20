@@ -28,9 +28,7 @@ export class PangolinService {
       friendPangolinId: idPangolinFriend,
     });
   }
-  addFriendUnknown(data: {}): Observable<any> {
-    return this.http.post(this.urlAPI + '/create', data);
-  }
+
   async updateAllPangolinNotFriend(
     pangolin: Pangolin
   ): Promise<Pangolin[]> {

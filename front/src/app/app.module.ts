@@ -30,7 +30,7 @@ registerLocaleData(en);
 
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormsModule,
+    // FormsModule,
   ],
   providers: [
     httpErrorInterceptorProviders,
