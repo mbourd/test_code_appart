@@ -33,14 +33,14 @@ router.get("/:id",
   handleErrorRoute(async (req, resp, next) => {
     const { id } = req.params;
     // const pangolin = await service.pangolin.findById(id);
+    const pangolin = await service.pangolin.findThenNormalized('findById', id);
 
-    // if (pangolin === null) {
-    //   throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
-    // }
+    if (pangolin === null) {
+      throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
+    }
 
     // resp.status(200).send(pangolin);
 
-    const _pangolin = await service.pangolin.findThenNormalized('findById', id);
     resp.status(200).send(_pangolin);
   })
 );
