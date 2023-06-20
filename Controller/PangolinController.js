@@ -41,7 +41,7 @@ router.get("/:id",
 
     // resp.status(200).send(pangolin);
 
-    resp.status(200).send(_pangolin);
+    resp.status(200).send(pangolin);
   })
 );
 
