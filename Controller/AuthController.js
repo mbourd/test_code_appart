@@ -43,37 +43,6 @@ router.post('/signup', handleErrorRoute(async (req, resp) => {
 
   const newPangolin = await service.pangolin.create(data);
 
-  if (fromFriend) {
-    const token = req.session.token;
-    Jwt.verify(token, authConfig.secret, (err, decoded) => {
-      if (err) {
-        if (err.name === "TokenExpiredError") {
-          throw new AccessDeniedException('Session expiré');
-        } else throw new AccessDeniedException('Non autorisé');
-      }
-
-      req.userId = decoded.id;
-    });
-
-    const currentPangolin = await service.pangolin.findByIdPopulate(req.userId, ['roles', 'pangolinFriends']);
-    currentPangolin.pangolinFriends.push(newPangolin);
-    newPangolin.pangolinFriends.push(currentPangolin);
-
-    await currentPangolin.save();
-    await newPangolin.save();
-
-    return resp.status(200).send(
-      await service.pangolin.findThenNormalized('findById', req.userId)
-      // await service.pangolin.custom(
-      //   { method: 'findById', param: req.userId },
-      //   { method: 'populate', param: ['roles'] },
-      //   { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
-      //   { method: 'select', param: ['-password'] },
-      //   { method: 'exec' }
-      // )
-    );
-  }
-
   resp.status(200).send('"Signed up"');
 }));
 
