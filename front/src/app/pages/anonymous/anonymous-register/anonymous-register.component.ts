@@ -70,23 +70,37 @@ export class AnonymousRegisterComponent implements OnInit {
       // console.log('submit', this.form.value);
       this.isSending = true;
       this.nzNotificationService.info('', 'Inscription en cours...');
-      this.authService.register(username, password, [role], this.inputAllPangolinsNotFriend ? true : false).subscribe({
-        next: async (d:any) => {
-          this.form.reset();
-          if (d instanceof Object) {
-            this.sessionService.saveUser(d);
+
+      if (this.inputAllPangolinsNotFriend) {
+        this.pangolineService.addFriend(this.sessionService.getUser()._id, null, { username, password, roles: [role] }).subscribe({
+          next: async (p: Pangolin) => {
+            this.form.reset();
+            this.sessionService.saveUser(p);
             this.outputAllPangolinsNotFriend.emit(await this.pangolineService.updateAllPangolinNotFriend(this.sessionService.getUser()));
             this.outputPangolin.emit(this.sessionService.getUser());
+          },
+          error: () => {
+            this.isSending = false;
+          },
+          complete: () => {
+            this.nzNotificationService.success('', 'Nouvel ami Pangolin inscrit');
+            this.isSending = false;
           }
-        },
-        error: () => {
-          this.isSending = false;
-        },
-        complete: () => {
-          this.nzNotificationService.success('', 'Pangolin inscrit');
-          this.isSending = false;
-        }
-      })
+        })
+      } else {
+        this.authService.register(username, password, [role]).subscribe({
+          next: async (d: any) => {
+            this.form.reset();
+          },
+          error: () => {
+            this.isSending = false;
+          },
+          complete: () => {
+            this.nzNotificationService.success('', 'Pangolin inscrit');
+            this.isSending = false;
+          }
+        });
+      }
     } else {
       [].forEach.call(
         Object.values(this.form.controls),

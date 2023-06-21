@@ -15,7 +15,7 @@ export class AuthService {
     private http: HttpClient,
     private sessionStorageService: SessionstorageService,
     private router: Router
-  ) { }
+  ) {}
 
   canActivate() {
     const isLoggedIn: boolean = this.sessionStorageService.isLoggedIn();
@@ -55,14 +55,12 @@ export class AuthService {
   register(
     username: string,
     password: string,
-    roles: string[],
-    fromFriend?:boolean
+    roles: string[]
   ): Observable<any> {
     return this.http.post(this.AUTH_API + '/signup', {
       username,
       password,
       roles,
-      fromFriend
     });
   }
 

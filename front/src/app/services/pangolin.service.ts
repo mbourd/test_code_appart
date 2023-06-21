@@ -22,43 +22,42 @@ export class PangolinService {
 
   addFriend(
     idPangolin: string,
-    idPangolinFriend: string
+    idPangolinFriend: string | null,
+    createNew?: { username: string; password: string; roles: string[] }
   ): Observable<Pangolin> {
     return this.http.put<Pangolin>(this.urlAPI + '/add-friend/' + idPangolin, {
       friendPangolinId: idPangolinFriend,
+      createNew,
     });
   }
 
-  async updateAllPangolinNotFriend(
-    pangolin: Pangolin
-  ): Promise<Pangolin[]> {
+  async updateAllPangolinNotFriend(pangolin: Pangolin): Promise<Pangolin[]> {
     let allPangolins: Pangolin[] = [];
-    await lastValueFrom(this.getAll())
-      .then((d: any) => {
-        // console.log(d);
-        // console.log(this.pangolin);
-        allPangolins = [...d];
+    await lastValueFrom(this.getAll()).then((d: any) => {
+      // console.log(d);
+      // console.log(this.pangolin);
+      allPangolins = [...d];
 
-        // for (let i = 0; i < this.allPangolinsNotFriend.length; i++) {
-        //   if (this.allPangolinsNotFriend[i]._id === this.pangolin._id) {
-        //     this.allPangolinsNotFriend.splice(i, 1);
+      // for (let i = 0; i < allPangolins.length; i++) {
+      //   if (allPangolins[i]._id === pangolin._id) {
+      //     allPangolins.splice(i, 1);
+      //     break;
+      //   }
+      // }
+      const index = allPangolins.findIndex((p) => p._id === pangolin._id);
+      if (index !== -1) allPangolins.splice(index, 1);
+
+      for (const p of pangolin.pangolinFriends) {
+        // for (let i = 0; i < allPangolins.length; i++) {
+        //   if (allPangolins[i]._id === p._id) {
+        //     allPangolins.splice(i, 1);
         //     break;
         //   }
         // }
-        const index = allPangolins.findIndex((p) => p._id === pangolin._id);
+        const index = allPangolins.findIndex((_p) => _p._id === p._id);
         if (index !== -1) allPangolins.splice(index, 1);
-
-        for (const p of pangolin.pangolinFriends) {
-          // for (let i = 0; i < this.allPangolinsNotFriend.length; i++) {
-          //   if (this.allPangolinsNotFriend[i]._id === p._id) {
-          //     this.allPangolinsNotFriend.splice(i, 1);
-          //     break;
-          //   }
-          // }
-          const index = allPangolins.findIndex((_p) => _p._id === p._id);
-          if (index !== -1) allPangolins.splice(index, 1);
-        }
-      });
+      }
+    });
     return allPangolins;
   }
 
