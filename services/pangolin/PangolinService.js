@@ -3,55 +3,56 @@ import ServiceUnavailableException from '../../Exceptions/ServiceUnvailableExcep
 import Pangolin from "../../Models/Pangolin.js";
 
 const ObjectId = mongoose.Types.ObjectId;
+const Model = Pangolin;
 
 export class PangolinService {
   async findAll() {
-    return Pangolin.find().exec();
+    return Model.find().exec();
   }
   async findAllPopulate(fields = []) {
     if (!Array.isArray(fields))
       throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Pangolin.find().populate(fields).exec();
+    return Model.find().populate(fields).exec();
   }
   async findBy(...args) {
-    return Pangolin.find(...args).exec();
+    return Model.find(...args).exec();
   }
   async findOne(...args) {
-    return Pangolin.findOne(...args).exec();
+    return Model.findOne(...args).exec();
   }
   async findOnePopulate(fields = [], ...args) {
     if (!Array.isArray(fields))
       throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Pangolin.findOne(...args).populate(fields).exec();
+    return Model.findOne(...args).populate(fields).exec();
   }
   async findById(id, ...args) {
     if (!ObjectId.isValid(id))
-      throw new ServiceUnavailableException('Pangolin id invalide');
-    return Pangolin.findById(id, ...args).exec();
+      throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+    return Model.findById(id, ...args).exec();
   }
   async findByIdPopulate(id, fields = [], ...args) {
     if (!ObjectId.isValid(id))
-      throw new ServiceUnavailableException('Pangolin id invalide');
+      throw new ServiceUnavailableException(Model.modelName + ' id invalide');
     if (!Array.isArray(fields))
       throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Pangolin.findById(id, ...args).populate(fields).exec();
+    return Model.findById(id, ...args).populate(fields).exec();
   }
   async create(data, ...args) {
     if (!(data instanceof Object)) {
       throw new ServiceUnavailableException(`data n'est pas un Object`);
     }
 
-    const pangolin = new Pangolin(data);
-    const error = this.getErrorsMessagesSync(pangolin);
+    const model = new Model(data);
+    const error = this.getErrorsMessagesSync(model);
 
     if (error.length) {
       throw new ServiceUnavailableException(error.join('<br>'));
     }
-    return pangolin.save(...args);
+    return model.save(...args);
   }
   async update(model, data, ...args) {
-    if (!(model instanceof Pangolin)) {
-      throw new ServiceUnavailableException(`model n'est pas une instance de Pangolin`);
+    if (!(model instanceof Model)) {
+      throw new ServiceUnavailableException(`model n'est pas une instance de ` + Model.modelName);
     }
     if (!(data instanceof Object)) {
       throw new ServiceUnavailableException(`data n'est pas un Object`);
@@ -75,14 +76,14 @@ export class PangolinService {
     return model.save(...args);
   }
   async delete(model, ...args) {
-    if (!(model instanceof Pangolin)) {
-      throw new ServiceUnavailableException(`model n'est pas une instance de Pangolin`);
+    if (!(model instanceof Model)) {
+      throw new ServiceUnavailableException(`model n'est pas une instance de ` + Model.modelName);
     }
-    return Pangolin.findByIdAndRemove(model._id, ...args).exec();
+    return Model.findByIdAndRemove(model._id, ...args).exec();
   }
   getErrorsMessagesSync(model) {
-    if (!(model instanceof Pangolin)) {
-      throw new ServiceUnavailableException(`model n'est pas une instance de Pangolin`);
+    if (!(model instanceof Model)) {
+      throw new ServiceUnavailableException(`model n'est pas une instance de ` + Model.modelName);
     }
 
     const error = model.validateSync();
@@ -110,26 +111,47 @@ export class PangolinService {
       throw new ServiceUnavailableException(`La méthode peut seulement être findById | findOne | find`);
     }
     if (method === "findById" && !ObjectId.isValid(methodParam)) {
-      throw new ServiceUnavailableException('Pangolin id invalide');
+      throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+    } else {
+      if (methodParam && Object.hasOwn(methodParam, '_id')) {
+        if (!ObjectId.isValid(methodParam._id)) {
+          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+        }
+      }
+      if (methodParam && Object.hasOwn(methodParam, 'id')) {
+        if (!ObjectId.isValid(methodParam.id)) {
+          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+        }
+      }
     }
 
-    return this.custom(
-      { method: method, param: methodParam },
-      { method: 'populate', param: ['roles'] },
-      {
-        method: 'populate', param: {
-          path: 'pangolinFriends',
-          populate: [{ path: 'roles', model: 'Role' }],
-          select: '-password'
-        }
-      },
-      // { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
-      { method: 'select', param: ['-password'] },
-      { method: 'exec' }
-    );
+    return Model[method](methodParam)
+      .populate(['roles'])
+      .populate({
+        path: 'pangolinFriends',
+        populate: [{ path: 'roles', model: 'Role' }],
+        select: '-password'
+      })
+      .select(['-password'])
+      .exec();
+
+    // return this.custom(
+    //   { method: method, param: methodParam },
+    //   { method: 'populate', param: ['roles'] },
+    //   {
+    //     method: 'populate', param: {
+    //       path: 'pangolinFriends',
+    //       populate: [{ path: 'roles', model: 'Role' }],
+    //       select: '-password'
+    //     }
+    //   },
+    //   // { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
+    //   { method: 'select', param: ['-password'] },
+    //   { method: 'exec' }
+    // );
   }
   async custom(...args) {
-    let result = Pangolin;
+    let result = Model;
 
     for (const arg of args) {
       const { method, isSpread, param } = arg;
