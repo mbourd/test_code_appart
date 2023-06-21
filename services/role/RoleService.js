@@ -59,12 +59,7 @@ export class RoleService {
     }
 
     for (const k in data) {
-      if (k === "roles") {
-        model[k].pop();
-        model[k].push(...data[k]);
-      } else {
-        model[k] = data[k];
-      }
+      model[k] = data[k];
     }
 
     const error = this.getErrorsMessagesSync(model);
@@ -100,56 +95,34 @@ export class RoleService {
 
     return messages;
   }
-  // async findThenNormalized(method, methodParam) {
-  //   if (method === undefined) {
-  //     throw new ServiceUnavailableException(`La méthode ne peut pas être undefined`);
-  //   }
-  //   if (typeof method !== "string") {
-  //     throw new ServiceUnavailableException(`La méthode doit être de type string`);
-  //   }
-  //   if (!['find', 'findOne', 'findById'].includes(method)) {
-  //     throw new ServiceUnavailableException(`La méthode peut seulement être findById | findOne | find`);
-  //   }
-  //   if (method === "findById" && !ObjectId.isValid(methodParam)) {
-  //     throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-  //   } else {
-  //     if (methodParam && Object.hasOwn(methodParam, '_id')) {
-  //       if (!ObjectId.isValid(methodParam._id)) {
-  //         throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-  //       }
-  //     }
-  //     if (methodParam && Object.hasOwn(methodParam, 'id')) {
-  //       if (!ObjectId.isValid(methodParam.id)) {
-  //         throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-  //       }
-  //     }
-  //   }
+  async findThenNormalized(method, methodParam) {
+    if (method === undefined) {
+      throw new ServiceUnavailableException(`La méthode ne peut pas être undefined`);
+    }
+    if (typeof method !== "string") {
+      throw new ServiceUnavailableException(`La méthode doit être de type string`);
+    }
+    if (!['find', 'findOne', 'findById'].includes(method)) {
+      throw new ServiceUnavailableException(`La méthode peut seulement être findById | findOne | find`);
+    }
+    if (method === "findById" && !ObjectId.isValid(methodParam)) {
+      throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+    } else {
+      if (methodParam && Object.hasOwn(methodParam, '_id')) {
+        if (!ObjectId.isValid(methodParam._id)) {
+          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+        }
+      }
+      if (methodParam && Object.hasOwn(methodParam, 'id')) {
+        if (!ObjectId.isValid(methodParam.id)) {
+          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
+        }
+      }
+    }
 
-  //   return Model[method](methodParam)
-  //     .populate(['roles'])
-  //     .populate({
-  //       path: 'pangolinFriends',
-  //       populate: [{ path: 'roles', model: 'Role' }],
-  //       select: '-password'
-  //     })
-  //     .select(['-password'])
-  //     .exec();
-
-  //   // return this.custom(
-  //   //   { method: method, param: methodParam },
-  //   //   { method: 'populate', param: ['roles'] },
-  //   //   {
-  //   //     method: 'populate', param: {
-  //   //       path: 'pangolinFriends',
-  //   //       populate: [{ path: 'roles', model: 'Role' }],
-  //   //       select: '-password'
-  //   //     }
-  //   //   },
-  //   //   // { method: 'populate', param: ['pangolinFriends', '-password'], isSpread: true },
-  //   //   { method: 'select', param: ['-password'] },
-  //   //   { method: 'exec' }
-  //   // );
-  // }
+    return Model[method](methodParam)
+      .exec();
+  }
   async custom(...args) {
     let result = Model;
 
