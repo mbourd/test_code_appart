@@ -12,4 +12,7 @@ export function handleErrorRoute(func) {
     try { await func(req, res, next); }
     catch (error) { next(error); }
   };
+  // return (req, res, next) => {
+  //   func(req, res, next).catch((error) => next(error));
+  // }
 }
