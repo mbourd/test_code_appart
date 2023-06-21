@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import ServiceUnavailableException from '../../Exceptions/ServiceUnvailableException.js'
-import Role from "../../Models/Role.js";
+import Role, { ROLES } from "../../Models/Role.js";
 
 const ObjectId = mongoose.Types.ObjectId;
 const Model = Role;
@@ -156,5 +156,21 @@ export class RoleService {
     }
 
     return result;
+  }
+  isValidRoles(roles) {
+    for (const role of roles) {
+      if (!ROLES.includes(role)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  async isValidRolesById(roles) {
+    for (const idRole of roles) {
+      if ((await this.findById(idRole)) === null) {
+        return false;
+      }
+    }
+    return true;
   }
 }
