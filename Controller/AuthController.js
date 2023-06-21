@@ -17,7 +17,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 //POST
 router.post('/signup', handleErrorRoute(async (req, resp) => {
-  const { username, roles, password, fromFriend } = req.body;
+  const { username, roles, password } = req.body;
 
   if ((await service.pangolin.findOne({ username })) !== null) {
     throw new BadRequestException('Nom de Pangolin déjà utilisé');
