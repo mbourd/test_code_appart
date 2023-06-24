@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Pangolin } from '../models/Pangolin';
 
 const USER_KEY = 'pangolin-user';
+const TOKEN_KEY = 'token-user';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class SessionstorageService {
   public saveUser(user: any): void {
     window.sessionStorage.removeItem(USER_KEY);
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    window.sessionStorage.setItem(TOKEN_KEY, user.accessToken);
   }
 
   public getUser(): Pangolin {
@@ -25,6 +27,10 @@ export class SessionstorageService {
     }
 
     return <Pangolin>{};
+  }
+
+  public getToken(): string {
+    return window.sessionStorage.getItem(TOKEN_KEY)!;
   }
 
   public isLoggedIn(): boolean {

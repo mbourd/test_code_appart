@@ -64,7 +64,7 @@ router.post('/signin', [], handleErrorRoute(async (req, resp) => {
     expiresIn: 86400, // 24 hours
   });
 
-  req.session.token = token;
+  req.session.token = token; // not necessary if transfer token to the client, check middlewares/authJwt.js:7 (retrieve token)
 
   resp.status(200).send({
     _id: pangolin._id,
@@ -72,6 +72,7 @@ router.post('/signin', [], handleErrorRoute(async (req, resp) => {
     roles: pangolin.roles,
     pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await service.pangolin.findThenNormalized('findById', p._id))),
     // pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    accessToken: token,
   });
 }));
 

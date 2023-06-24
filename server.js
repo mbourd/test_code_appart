@@ -21,7 +21,7 @@ const app = express();
 app.use(cors({
   // origin: "http://192.168.1.32:4200",
   origin: "http://localhost:4200",
-  credentials:true,
+  credentials: true,
 }));
 app.use(compression());
 app.use(bodyParser.json());
@@ -35,7 +35,9 @@ app.use(
 app.use(function (req, res, next) {
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, Content-Type, Accept"
+    // "Origin, Content-Type, Accept",
+    // "Authorization, Origin, Content-Type, Accept",
+    "x-access-token, Origin, Content-Type, Accept"
   );
   next();
 });

@@ -108,15 +108,15 @@ export class RoleService {
     if (method === "findById" && !ObjectId.isValid(methodParam)) {
       throw new ServiceUnavailableException(Model.modelName + ' id invalide');
     } else {
-      if (methodParam && Object.hasOwn(methodParam, '_id')) {
-        if (!ObjectId.isValid(methodParam._id)) {
-          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-        }
+      if (methodParam
+        && Object.hasOwn(methodParam, '_id')
+        && !ObjectId.isValid(methodParam._id)) {
+        throw new ServiceUnavailableException(Model.modelName + ' id invalide');
       }
-      if (methodParam && Object.hasOwn(methodParam, 'id')) {
-        if (!ObjectId.isValid(methodParam.id)) {
-          throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-        }
+      if (methodParam
+        && Object.hasOwn(methodParam, 'id')
+        && !ObjectId.isValid(methodParam.id)) {
+        throw new ServiceUnavailableException(Model.modelName + ' id invalide');
       }
     }
 
