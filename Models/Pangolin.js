@@ -35,9 +35,16 @@ const PangolinSchema = new Schema({
     ],
     validate: {
       validator: function (v) {
-        return v !== null && v.length > 0;
+        return /*v !== undefined && v !== null && */Array.isArray(v) && v.length === 1;
       },
-      message: props => "Il faut au moins 1 role"
+      message: props => {
+        if (props.value === undefined
+          || props.value === null
+          || !Array.isArray(props.value)
+          || props.value.length === 0
+        ) return "Il faut au moins 1 role";
+        if (props.value.length > 1) return "Il faut 1 role";
+      }
     }
   },
   pangolinFriends: [{
