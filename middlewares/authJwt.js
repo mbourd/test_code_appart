@@ -4,8 +4,8 @@ import AccessDeniedException from '../Exceptions/AccessDeniedException.js';
 import ForbiddenException from '../Exceptions/ForbiddenException.js';
 
 export async function checkJWT(req, resp, next) {
-  const token = req.session.token;
-  // const token = req.headers["x-access-token"];
+  // const token = req.session.token;
+  const token = req.headers["x-access-token"];
   // const token = req.headers["Authorization"];
 
   if (!token) {

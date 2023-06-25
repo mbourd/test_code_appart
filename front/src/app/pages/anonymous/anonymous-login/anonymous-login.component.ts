@@ -43,6 +43,7 @@ export class AnonymousLoginComponent implements OnInit {
       this.authService.login(username, password).subscribe({
         next: (data) => {
           this.sessionService.saveUser(data);
+          this.sessionService.saveToken(data.accessToken);
           // console.log(this.sessionService.getUser());
           this.router.navigate(['/pangolin/profile']);
         },

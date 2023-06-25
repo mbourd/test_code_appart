@@ -18,9 +18,9 @@ export class JwtInterceptor implements HttpInterceptor {
       withCredentials: true,
     });
 
-    // if (this.sessionService.isLoggedIn()) {
-    //   return next.handle(this.addToken(req, this.sessionService.getToken()));
-    // }
+    if (this.sessionService.isLoggedIn()) {
+      return next.handle(this.addToken(req, this.sessionService.getToken()));
+    }
 
     return next.handle(req);
   }

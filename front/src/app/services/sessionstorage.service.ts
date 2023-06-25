@@ -17,7 +17,6 @@ export class SessionstorageService {
   public saveUser(user: any): void {
     window.sessionStorage.removeItem(USER_KEY);
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
-    window.sessionStorage.setItem(TOKEN_KEY, user.accessToken);
   }
 
   public getUser(): Pangolin {
@@ -27,6 +26,10 @@ export class SessionstorageService {
     }
 
     return <Pangolin>{};
+  }
+
+  public saveToken(token: string): void {
+    window.sessionStorage.setItem(TOKEN_KEY, token);
   }
 
   public getToken(): string {
