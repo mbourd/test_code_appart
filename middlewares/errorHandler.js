@@ -1,6 +1,6 @@
 export function errorHandler(err, req, res, next) {
   res.status(err.status || 500);
-  res.send({ titleExc: err.title, message: err.message });
+  res.send({ titleExc: err.title, message: err.message, extra: err.extraData });
   // res.render('error', {
   //   message: err.message,
   //   error: {}
