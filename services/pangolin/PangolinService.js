@@ -44,6 +44,8 @@ export class PangolinService {
 
     const model = new Model(data);
     const error = this.getErrorsMessagesSync(model);
+    const asyncError = await this.getErrorMessages(model);
+    error.push(...asyncError);
 
     if (error.length) {
       throw new ServiceUnavailableException(error.join('<br>'));
@@ -68,6 +70,8 @@ export class PangolinService {
     }
 
     const error = this.getErrorsMessagesSync(model);
+    const asyncError = await this.getErrorMessages(model);
+    error.push(...asyncError);
 
     if (error.length) {
       throw new ServiceUnavailableException(error.join('<br>'));
@@ -100,6 +104,25 @@ export class PangolinService {
 
     return messages;
   }
+  async getErrorMessages(model) {
+    if (!(model instanceof Model)) {
+      throw new ServiceUnavailableException(`model n'est pas une instance de ` + Model.modelName);
+    }
+
+    let error;
+    try {
+      await model.validate();
+    } catch (err) { error = err; }
+    const messages = [];
+
+    if (error) {
+      for (const field in error.errors) {
+        messages.push(await error.errors[field].properties.message);
+      }
+    }
+
+    return messages;
+  }
   async findThenNormalized(method, methodParam) {
     if (method === undefined) {
       throw new ServiceUnavailableException(`La méthode ne peut pas être undefined`);
@@ -126,13 +149,18 @@ export class PangolinService {
     }
 
     return Model[method](methodParam)
-      .populate(['roles'])
+      // .populate(['roles'])
+      .populate({
+        path: 'roles',
+        model: 'Role',
+        select: '-__v'
+      })
       .populate({
         path: 'pangolinFriends',
-        populate: [{ path: 'roles', model: 'Role' }],
-        select: '-password'
+        populate: [{ path: 'roles', model: 'Role', select: '-__v' }],
+        select: '-password -__v'
       })
-      .select(['-password'])
+      .select(['-password', '-__v'])
       .exec();
 
     // return this.custom(

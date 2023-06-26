@@ -37,7 +37,7 @@ router.post('/signup', handleErrorRoute(async (req, resp) => {
 
   const data = {
     ...req.body,
-    roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
+    // roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
     password: bcrypt.hashSync(req.body.password, 8),
   }
 
@@ -48,13 +48,14 @@ router.post('/signup', handleErrorRoute(async (req, resp) => {
 
 router.post('/signin', [], handleErrorRoute(async (req, resp) => {
   const { username, password } = req.body;
-  const pangolin = await service.pangolin.findOnePopulate(['pangolinFriends', 'roles'], { username });
+  const pangolin = await service.pangolin.findThenNormalized('findOne', { username });
+  const _pangolin = await service.pangolin.findOne({ username });
 
   if (pangolin === null) {
     throw new AccessDeniedException('Authentification échoué : Pangolin inconnu', 'Accès refusé');
   }
 
-  const validPassword = bcrypt.compareSync(password, pangolin.password);
+  const validPassword = bcrypt.compareSync(password, _pangolin.password);
 
   if (!validPassword) {
     throw new AccessDeniedException('Authentification échoué : Mot de passe invalide', 'Accès refusé');
@@ -69,9 +70,11 @@ router.post('/signin', [], handleErrorRoute(async (req, resp) => {
   resp.status(200).send({
     _id: pangolin._id,
     username: pangolin.username,
+    // roles: await Promise.all(pangolin.roles.map(async (r) => await service.role.findThenNormalized('findById', r._id))),
     roles: pangolin.roles,
-    pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await service.pangolin.findThenNormalized('findById', p._id))),
+    // pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await service.pangolin.findThenNormalized('findById', p._id))),
     // pangolinFriends: await Promise.all(pangolin.pangolinFriends.map(async (p) => await Pangolin.findById(p._id).select(['-password']).populate(['roles']).exec())),
+    pangolinFriends: pangolin.pangolinFriends,
     accessToken: token,
   });
 }));

@@ -121,6 +121,7 @@ export class RoleService {
     }
 
     return Model[method](methodParam)
+      .select(['-__v'])
       .exec();
   }
   async custom(...args) {
