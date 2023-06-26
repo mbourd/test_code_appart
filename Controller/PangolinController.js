@@ -94,7 +94,7 @@ router.put("/update/:id",
 
     for (const k in req.body) {
       if (k === "role") {
-        data['roles'] = [await service.role.findById(req.body[k])];
+        data['roles'] = [req.body[k]];
       } else {
         data[k] = req.body[k];
       }
