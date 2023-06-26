@@ -1,7 +1,8 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import Role from './Role.js';
+import Role, { modelName as modelNameRole } from './Role.js';
 
 const ObjectId = Types.ObjectId;
+export const modelName = "Pangolin";
 
 const PangolinSchema = new Schema({
   username: {
@@ -15,10 +16,10 @@ const PangolinSchema = new Schema({
       //   if (!idExist && pangolin) return Promise.resolve(false);
       // },
       validator: async function (v) {
-        const idExist = await Pangolin.exists({ _id: this.id }).exec();
+        // const idExist = await Pangolin.exists({ _id: this.id }).exec();
         const pangolin = await Pangolin.exists({ username: v }).exec();
-        if (idExist && pangolin) return true; // when update the document
-        if (!idExist && pangolin) return false; // when create a new document
+        if (/*idExist*/!this.isNew && pangolin) return true; // when update the document
+        if (/*!idExist*/this.isNew && pangolin) return false; // when create a new document
       },
       message: (props) => {
         return "Nom de Pangolin déjà utilisé";
@@ -49,7 +50,7 @@ const PangolinSchema = new Schema({
     type: [
       {
         type: ObjectId,
-        ref: "Role",
+        ref: modelNameRole,
         // required: true,
       }
     ],
@@ -68,8 +69,8 @@ const PangolinSchema = new Schema({
   },
 
   pangolinFriends: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Pangolin',
+    type: ObjectId,
+    ref: modelName,
   }]
 }, {
   toJSON: { virtuals: true },
@@ -77,7 +78,7 @@ const PangolinSchema = new Schema({
 });
 
 PangolinSchema.virtual('friends', {
-  ref: 'Pangolin',
+  ref: modelName,
   localField: '_id',
   foreignField: 'pangolinFriends',
 });
@@ -87,6 +88,6 @@ PangolinSchema.virtual('friends', {
 //   return !pangolin ? next() : next(new Error("Nom de Pangolin déjà utilisé"));
 // });
 
-const Pangolin = mongoose.model("Pangolin", PangolinSchema);
+const Pangolin = mongoose.model(modelName, PangolinSchema);
 
 export default Pangolin;

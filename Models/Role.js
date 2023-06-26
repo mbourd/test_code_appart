@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
+export const modelName = "Role";
 
 const RoleSchema = new Schema({
   name: {
@@ -9,7 +10,7 @@ const RoleSchema = new Schema({
   }
 });
 
-const Role = mongoose.model('Role', RoleSchema);
+const Role = mongoose.model(modelName, RoleSchema);
 
 export const ROLES = ["Guerrier", "Alchimiste", "Sorcier", "Espion", "Enchanteur"];
 

@@ -9,33 +9,42 @@ export class PangolinService {
   async findAll() {
     return Model.find().exec();
   }
-  async findAllPopulate(fields = []) {
-    if (!Array.isArray(fields))
-      throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Model.find().populate(fields).exec();
+  async findAllPopulate(...populateArgs) {
+    return Model.find().populate(...populateArgs).exec();
   }
   async findBy(...args) {
     return Model.find(...args).exec();
   }
-  async findOne(...args) {
-    return Model.findOne(...args).exec();
+  async findByPopulate(filter = {}, findArgs = [], populateArgs = []) {
+    if (!Array.isArray(findArgs))
+      throw new ServiceUnavailableException(`findArgs n'est pas un Array`);
+    if (!Array.isArray(populateArgs))
+      throw new ServiceUnavailableException(`populateArgs n'est pas un Array`);
+    return Model.find(filter, ...findArgs).populate(...populateArgs).exec();
   }
-  async findOnePopulate(fields = [], ...args) {
-    if (!Array.isArray(fields))
-      throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Model.findOne(...args).populate(fields).exec();
+  async findOne(filter = {}, ...args) {
+    return Model.findOne(filter, ...args).exec();
+  }
+  async findOnePopulate(filter = {}, findArgs = [], populateArgs = []) {
+    if (!Array.isArray(findArgs))
+      throw new ServiceUnavailableException(`findArgs n'est pas un Array`);
+    if (!Array.isArray(populateArgs))
+      throw new ServiceUnavailableException(`populateArgs n'est pas un Array`);
+    return Model.findOne(filter, ...findArgs).populate(...populateArgs).exec();
   }
   async findById(id, ...args) {
     if (!ObjectId.isValid(id))
       throw new ServiceUnavailableException(Model.modelName + ' id invalide');
     return Model.findById(id, ...args).exec();
   }
-  async findByIdPopulate(id, fields = [], ...args) {
+  async findByIdPopulate(id, findArgs = [], populateArgs = []) {
     if (!ObjectId.isValid(id))
       throw new ServiceUnavailableException(Model.modelName + ' id invalide');
-    if (!Array.isArray(fields))
-      throw new ServiceUnavailableException(`fields n'est pas un Array`);
-    return Model.findById(id, ...args).populate(fields).exec();
+    if (!Array.isArray(findArgs))
+      throw new ServiceUnavailableException(`findArgs n'est pas un Array`);
+    if (!Array.isArray(populateArgs))
+      throw new ServiceUnavailableException(`populateArgs n'est pas un Array`);
+    return Model.findById(id, ...findArgs).populate(...populateArgs).exec();
   }
   async create(data, ...args) {
     if (!(data instanceof Object)) {
@@ -123,7 +132,7 @@ export class PangolinService {
 
     return messages;
   }
-  async findThenNormalized(method, methodParam) {
+  async findThenNormalized(method, ...methodParam) {
     if (method === undefined) {
       throw new ServiceUnavailableException(`La méthode ne peut pas être undefined`);
     }
@@ -133,22 +142,22 @@ export class PangolinService {
     if (!['find', 'findOne', 'findById'].includes(method)) {
       throw new ServiceUnavailableException(`La méthode peut seulement être findById | findOne | find`);
     }
-    if (method === "findById" && !ObjectId.isValid(methodParam)) {
+    if (method === "findById" && !ObjectId.isValid(methodParam[0])) {
       throw new ServiceUnavailableException(Model.modelName + ' id invalide');
     } else {
-      if (methodParam && Object.hasOwn(methodParam, '_id')) {
-        if (!ObjectId.isValid(methodParam._id)) {
+      if (methodParam[0] && Object.hasOwn(methodParam[0], '_id')) {
+        if (!ObjectId.isValid(methodParam[0]._id)) {
           throw new ServiceUnavailableException(Model.modelName + ' id invalide');
         }
       }
-      if (methodParam && Object.hasOwn(methodParam, 'id')) {
-        if (!ObjectId.isValid(methodParam.id)) {
+      if (methodParam[0] && Object.hasOwn(methodParam[0], 'id')) {
+        if (!ObjectId.isValid(methodParam[0].id)) {
           throw new ServiceUnavailableException(Model.modelName + ' id invalide');
         }
       }
     }
 
-    return Model[method](methodParam)
+    return Model[method](...methodParam)
       // .populate(['roles'])
       .populate({
         path: 'roles',
