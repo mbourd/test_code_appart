@@ -95,7 +95,7 @@ PangolinSchema.virtual('friends', {
 PangolinSchema.pre('save', async function (next) {
   // let pangolin = await Pangolin.exists({ username: this.username }).exec();
   // return !pangolin ? next() : next(new Error("Nom de Pangolin déjà utilisé"));
-  this.password = bcrypt.hashSync(this.password, 8);
+  this.password = this.isNew ? bcrypt.hashSync(this.password, 8) : this.password;
 });
 
 const Pangolin = mongoose.model(modelName, PangolinSchema);
