@@ -1,4 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
+import bcrypt from 'bcryptjs';
 import Role, { modelName as modelNameRole } from './Role.js';
 
 const ObjectId = Types.ObjectId;
@@ -29,7 +30,15 @@ const PangolinSchema = new Schema({
 
   password: {
     type: String,
-    required: [true, `Mot de passe obligatoire`]
+    required: [true, `Mot de passe obligatoire`],
+    validate: {
+      validator: (v) => {
+        return v.length >= 4;
+      },
+      message: (props) => {
+        return "Le mot de passe doit faire au minimum 4 charactères";
+      }
+    }
   },
 
   // roles: [
@@ -83,10 +92,11 @@ PangolinSchema.virtual('friends', {
   foreignField: 'pangolinFriends',
 });
 
-// PangolinSchema.pre('save', async function (next) {
-//   let pangolin = await Pangolin.exists({ username: this.username }).exec();
-//   return !pangolin ? next() : next(new Error("Nom de Pangolin déjà utilisé"));
-// });
+PangolinSchema.pre('save', async function (next) {
+  // let pangolin = await Pangolin.exists({ username: this.username }).exec();
+  // return !pangolin ? next() : next(new Error("Nom de Pangolin déjà utilisé"));
+  this.password = bcrypt.hashSync(this.password, 8);
+});
 
 const Pangolin = mongoose.model(modelName, PangolinSchema);
 

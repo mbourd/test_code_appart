@@ -19,26 +19,27 @@ const ObjectId = mongoose.Types.ObjectId;
 router.post('/signup', handleErrorRoute(async (req, resp) => {
   const { username, roles, password } = req.body;
 
-  if ((await service.pangolin.findOne({ username })) !== null) {
-    throw new BadRequestException('Nom de Pangolin déjà utilisé');
-  }
+  // if ((await service.pangolin.findOne({ username })) !== null) {
+  //   throw new BadRequestException('Nom de Pangolin déjà utilisé');
+  // }
 
-  if (roles.length === 0) {
-    throw new BadRequestException('Il faut au moins un role');
-  }
+  // if (roles.length === 0) {
+  //   throw new BadRequestException('Il faut au moins un role');
+  // }
 
-  if (!(await service.role.isValidRolesById(roles))) {
-    throw new BadRequestException('Role du Pangolin non valide');
-  }
+  // if (!(await service.role.isValidRolesById(roles))) {
+  //   throw new BadRequestException('Role du Pangolin non valide');
+  // }
 
-  if (password.length < 4) {
-    throw new BadRequestException('Le mot de passe doit faire au minimum 4 charactères');
-  }
+  // if (password.length < 4) {
+  //   throw new BadRequestException('Le mot de passe doit faire au minimum 4 charactères');
+  // }
 
   const data = {
-    ...req.body,
-    // roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
-    password: bcrypt.hashSync(req.body.password, 8),
+    username, roles, password
+    // ...req.body,
+    // // roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
+    // password: bcrypt.hashSync(req.body.password, 8),
   }
 
   const newPangolin = await service.pangolin.create(data);

@@ -52,9 +52,7 @@ export class PangolinService {
     }
 
     const model = new Model(data);
-    const error = this.getErrorsMessagesSync(model);
-    const asyncError = await this.getErrorMessages(model);
-    error.push(...asyncError);
+    const error = await this.getErrorMessages(model);
 
     if (error.length) {
       throw new ServiceUnavailableException(error.join('<br>'));
@@ -78,9 +76,7 @@ export class PangolinService {
       }
     }
 
-    const error = this.getErrorsMessagesSync(model);
-    const asyncError = await this.getErrorMessages(model);
-    error.push(...asyncError);
+    const error = await this.getErrorMessages(model);
 
     if (error.length) {
       throw new ServiceUnavailableException(error.join('<br>'));

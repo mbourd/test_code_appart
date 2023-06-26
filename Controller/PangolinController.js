@@ -129,42 +129,45 @@ router.put("/add-friend/:id",
       ? await service.pangolin.findById(friendPangolinId)
       : null;
 
-    if (createNew) {
-      const { username, roles, password } = createNew;
-
-      if ((await service.pangolin.findOne({ username })) !== null) {
-        throw new BadRequestException('Nom de Pangolin déjà utilisé');
-      }
-
-      if (roles.length === 0) {
-        throw new BadRequestException('Il faut au moins un role');
-      }
-
-      if (!(await service.role.isValidRolesById(roles))) {
-        throw new BadRequestException('Role du Pangolin non valide');
-      }
-
-      if (password.length < 4) {
-        throw new BadRequestException('Le mot de passe doit faire au minimum 4 charactères');
-      }
-
-      const data = {
-        ...createNew,
-        roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
-        password: bcrypt.hashSync(password, 8),
-      }
-
-      friendPangolin = await service.pangolin.create(data);
+    if (id !== req.userId) {
+      throw new ForbiddenException('Action non autorisé');
     }
 
     if (pangolin === null) {
       throw new NotFoundException('Pangolin id ' + id + ' non trouvé');
     }
+
+    if (createNew) {
+      const { username, roles, password } = createNew;
+
+      // if ((await service.pangolin.findOne({ username })) !== null) {
+      //   throw new BadRequestException('Nom de Pangolin déjà utilisé');
+      // }
+
+      // if (roles.length === 0) {
+      //   throw new BadRequestException('Il faut au moins un role');
+      // }
+
+      // if (!(await service.role.isValidRolesById(roles))) {
+      //   throw new BadRequestException('Role du Pangolin non valide');
+      // }
+
+      // if (password.length < 4) {
+      //   throw new BadRequestException('Le mot de passe doit faire au minimum 4 charactères');
+      // }
+
+      const data = {
+        username, roles, password
+        // ...createNew,
+        // roles: await Promise.all(roles.map(async (r) => await service.role.findById(r))),
+        // password: bcrypt.hashSync(password, 8),
+      }
+
+      friendPangolin = await service.pangolin.create(data);
+    }
+
     if (friendPangolin === null) {
       throw new NotFoundException(`L'ami Pangolin id ${friendPangolinId} non trouvé`);
-    }
-    if (id !== req.userId) {
-      throw new ForbiddenException('Action non autorisé');
     }
 
     if (pangolin.pangolinFriends.includes(friendPangolinId)) {
